@@ -1,6 +1,4 @@
-#ultroidxTeam (admin - TG )
-#import logging
-#(©)Codexbotz
+
 
 import base64
 import re
