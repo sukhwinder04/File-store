@@ -181,8 +181,8 @@ async def start_command(client: Client, message: Message):
                 
         elif verify_status['is_verified']:
             reply_markup = InlineKeyboardMarkup(
-                [[InlineKeyboardButton("About Me", callback_data="about"),
-                  InlineKeyboardButton("Close", callback_data="close")]]
+                [[InlineKeyboardButton("𝗔𝗯𝗼𝘂𝘁 𝗠𝗲", callback_data="about"),
+                  InlineKeyboardButton("𝗖𝗹𝗼𝘀𝗲", callback_data="close")]]
             )
             await message.reply_text(
                 text=START_MSG.format(
@@ -206,10 +206,10 @@ async def start_command(client: Client, message: Message):
                 await update_verify_status(id, verify_token=token, link="")
                 link = await get_shortlink(SHORTLINK_URL, SHORTLINK_API,f'https://telegram.dog/{client.username}?start=verify_{token}')
                 btn = [
-                    [InlineKeyboardButton("Click here", url=link)],
-                    [InlineKeyboardButton('How to use the bot', url=TUT_VID)]
+                    [InlineKeyboardButton("𝗖𝗹𝗶𝗰𝗸 𝗵𝗲𝗿𝗲", url=link)],
+                    [InlineKeyboardButton('𝗛𝗼𝘄 𝘁𝗼 𝘂𝘀𝗲 𝘁𝗵𝗲 𝗯𝗼𝘁', url=TUT_VID)]
                 ]
-                await message.reply(f"Your Ads token is expired, refresh your token and try again.\n\nToken Timeout: {get_exp_time(VERIFY_EXPIRE)}\n\nWhat is the token?\n\nThis is an ads token. If you pass 1 ad, you can use the bot for 24 Hour after passing the ad.", reply_markup=InlineKeyboardMarkup(btn), protect_content=False, quote=True)
+                await message.reply(f"𝗔𝘁𝘁𝗲𝗻𝘁𝗶𝗼𝗻!\n𝗬𝗼𝘂𝗿 𝗮𝗰𝗰𝗲𝘀𝘀 𝘁𝗼𝗸𝗲𝗻 𝗵𝗮𝘀 𝗲𝘅𝗽𝗶𝗿𝗲𝗱. 𝗣𝗹𝗲𝗮𝘀𝗲 𝗿𝗲𝗳𝗿𝗲𝘀𝗵 𝘆𝗼𝘂𝗿 𝘁𝗼𝗸𝗲𝗻 𝘁𝗼 𝗰𝗼𝗻𝘁𝗶𝗻𝘂𝗲 𝗲𝗻𝗷𝗼𝘆𝗶𝗻𝗴 𝗼𝘂𝗿 𝘀𝗲𝗿𝘃𝗶𝗰𝗲𝘀.\n𝗧𝗼𝗸𝗲𝗻 𝗧𝗶𝗺𝗲𝗼𝘂𝘁: {get_exp_time(VERIFY_EXPIRE)}\n𝗪𝗵𝗮𝘁 𝗶𝘀 𝘁𝗵𝗶𝘀 𝘁𝗼𝗸𝗲𝗻?\n𝐓𝐡𝐢𝐬 𝐢𝐬 𝐚𝐧 𝐚𝐝𝐬 𝐭𝐨𝐤𝐞𝐧. 𝐁𝐲 𝐰𝐚𝐭𝐜𝐡𝐢𝐧𝐠 𝐚 𝐬𝐢𝐧𝐠𝐥𝐞 𝐚𝐝, 𝐲𝐨𝐮 𝐜𝐚𝐧 𝐠𝐚𝐢𝐧 𝐮𝐧𝐢𝐧𝐭𝐞𝐫𝐫𝐮𝐩𝐭𝐞𝐝 𝐚𝐜𝐜𝐞𝐬𝐬 𝐭𝐨 𝐭𝐡𝐞 𝐛𝐨𝐭 𝐟𝐨𝐫 𝐭𝐡𝐞 𝐧𝐞𝐱𝐭 24 𝐡𝐨𝐮𝐫𝐬.\n𝗥𝗲𝗳𝗿𝗲𝘀𝗵 𝘆𝗼𝘂𝗿 𝘁𝗼𝗸𝗲𝗻 𝗻𝗼𝘄 𝗮𝗻𝗱 𝗰𝗼𝗻𝘁𝗶𝗻𝘂𝗲 𝘆𝗼𝘂𝗿 𝗰𝗶𝗻𝗲𝗺𝗮𝘁𝗶𝗰 𝗷𝗼𝘂𝗿𝗻𝗲𝘆!", reply_markup=InlineKeyboardMarkup(btn), protect_content=False, quote=True)
 
         
 #=====================================================================================##
@@ -227,10 +227,10 @@ async def not_joined(client: Client, message: Message):
     buttons = [
         [
             InlineKeyboardButton(
-                "Join Channel",
+                "⚡𝗝𝗼𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹1⚡",
                 url = client.invitelink),
             InlineKeyboardButton(
-                "Join Channel",
+                "⚡𝗝𝗼𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹2⚡",
                 url = client.invitelink2)
         ]
     ]
@@ -238,7 +238,7 @@ async def not_joined(client: Client, message: Message):
         buttons.append(
             [
                 InlineKeyboardButton(
-                    text = 'Try Again',
+                    text = '𝗧𝗿𝘆 𝗔𝗴𝗮𝗶𝗻',
                     url = f"https://t.me/{client.username}?start={message.command[1]}"
                 )
             ]
