@@ -17,7 +17,7 @@ from datetime import datetime, timedelta
 from bot import Bot
 from config import *
 from helper_func import subscribed, encode, decode, get_messages, get_shortlink, get_verify_status, update_verify_status, get_exp_time
-from database.database import add_user, del_user, full_userbase, present_user
+from database.database import add_user, del_user, full_userbase, present_user, is_premium
 from shortzy import Shortzy
 
 client = MongoClient(DB_URI)  # Replace with your MongoDB URI
@@ -84,7 +84,7 @@ async def delete_notification_after_delay(client, chat_id, message_id, delay):
 async def start_command(client: Client, message: Message):
     id = message.from_user.id
     UBAN = BAN  # Fetch the owner's ID from config
-    
+    is_prem = await is_premium(id)
     # Schedule the initial message for deletion after 10 minutes
     #await schedule_auto_delete(client, message.chat.id, message.id, delay=600)
 
@@ -179,7 +179,7 @@ async def start_command(client: Client, message: Message):
                 delete_notification = await message.reply(NOTIFICATION)
                 asyncio.create_task(delete_notification_after_delay(client, delete_notification.chat.id, delete_notification.id, delay=NOTIFICATION_TIME))
                 
-        elif verify_status['is_verified']:
+        elif is_prem or verify_status['is_verified']:
             reply_markup = InlineKeyboardMarkup(
                 [[InlineKeyboardButton("𝗔𝗯𝗼𝘂𝘁 𝗠𝗲", callback_data="about"),
                   InlineKeyboardButton("𝗖𝗹𝗼𝘀𝗲", callback_data="close")]]
