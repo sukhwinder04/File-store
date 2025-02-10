@@ -51,3 +51,36 @@ async def full_userbase():
 async def del_user(user_id: int):
     await user_data.delete_one({'_id': user_id})
     return
+
+
+async def add_premium_user(user_id: int, duration: str):
+    time_map = {'min': 1, 'd': 1440, 'w': 10080, 'm': 43200}
+    
+    unit = duration[-1]
+    if unit not in time_map:
+        return False  # Invalid format
+
+    try:
+        value = int(duration[:-1])
+        minutes = value * time_map[unit]
+        expiry_date = datetime.datetime.utcnow() + datetime.timedelta(minutes=minutes)
+        
+        await premium_users.update_one(
+            {'_id': user_id}, 
+            {'$set': {'expiry_date': expiry_date}}, 
+            upsert=True
+        )
+        return True
+    except ValueError:
+        return False  # Invalid format
+
+async def remove_premium_user(user_id: int):
+    await premium_users.delete_one({'_id': user_id})
+
+async def get_premium_users():
+    users = premium_users.find()
+    return [{'_id': doc['_id'], 'expiry_date': doc['expiry_date']} async for doc in users]
+
+async def is_premium(user_id: int):
+    user = await premium_users.find_one({'_id': user_id})
+    return bool(user)
