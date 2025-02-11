@@ -84,7 +84,7 @@ async def delete_notification_after_delay(client, chat_id, message_id, delay):
 async def start_command(client: Client, message: Message):
     id = message.from_user.id
     UBAN = BAN  # Fetch the owner's ID from config
-    is_prem = await is_premium(id)
+    is_prem = is_premium(od)
     # Schedule the initial message for deletion after 10 minutes
     #await schedule_auto_delete(client, message.chat.id, message.id, delay=600)
 
@@ -204,7 +204,7 @@ async def start_command(client: Client, message: Message):
                 # TUT_VID = f"https://t.me/ultroid_official/18"
                 token = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
                 await update_verify_status(id, verify_token=token, link="")
-                link = await get_shortlink(SHORTLINK_URL, SHORTLINK_API,f'https://telegram.dog/{BOT_USERNAME}?start=verify_{token}')
+                link = await get_shortlink(SHORTLINK_URL, SHORTLINK_API,f'https://telegram.dog/{client.username}?start=verify_{token}')
                 btn = [
                     [InlineKeyboardButton("𝗖𝗹𝗶𝗰𝗸 𝗵𝗲𝗿𝗲", url=link)],
                     [InlineKeyboardButton('𝗛𝗼𝘄 𝘁𝗼 𝘂𝘀𝗲 𝘁𝗵𝗲 𝗯𝗼𝘁', url=TUT_VID)]
@@ -225,9 +225,9 @@ REPLY_ERROR = """<code>Use this command as a replay to any telegram message with
 @Bot.on_message(filters.command('start') & filters.private)
 async def not_joined(client: Client, message: Message):
     invite = await client.create_chat_invite_link(
-        chat_id=FORCE_SUB_CHANNEL,
-        creates_join_request=True
-    )
+            chat_id=FORCE_SUB_CHANNEL,
+            creates_join_request=True
+        )
     buttons = [
         [
             InlineKeyboardButton(
