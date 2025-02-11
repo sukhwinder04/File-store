@@ -6,7 +6,7 @@ from logging.handlers import RotatingFileHandler
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
 
 
-
+BOT_USERNAME = os.environ.get("BOT_USERNAME", "@Self_ReponseBot")
 BAN = int(os.environ.get("BAN", "498459845"))
 DELETE_AFTER = int(os.environ.get("DELETE_AFTER", 1800)) #seconds
 NOTIFICATION_TIME = int(os.environ.get('NOTIFICATION_TIME', 60)) #seconds
