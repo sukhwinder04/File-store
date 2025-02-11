@@ -28,7 +28,7 @@ async def is_subscribed(filter, client, update):
     except UserNotParticipant:
         return False
 
-    if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]:
+    if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER, ChatMemberStatus.RESTRICTED]:
         return False
     else:
         return True
@@ -44,7 +44,7 @@ async def is_subscribed(filter, client, update):
     except UserNotParticipant:
         return False
 
-    if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]:
+    if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER, ChatMemberStatus.RESTRICTED]:
         return False
     else:
         return True
@@ -62,7 +62,7 @@ async def is_subscribed(filter, client, update):
     except UserNotParticipant:
         return False
 
-    if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]:
+    if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER, ChatMemberStatus.RESTRICTED]:
         return False
     try:
         member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL2, user_id = user_id)
