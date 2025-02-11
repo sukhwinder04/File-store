@@ -3,7 +3,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 #Bot token @Botfather
-TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "7901385761:AAFrew-XLGhGr1FcXgfraRfPF8DjSQQkcXU")
+TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
 
 
 
