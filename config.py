@@ -3,7 +3,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 #Bot token @Botfather
-TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
+TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "7901385761:AAFrew-XLGhGr1FcXgfraRfPF8DjSQQkcXU")
 
 
 
@@ -25,7 +25,7 @@ APP_ID = int(os.environ.get("APP_ID", "14031130"))
 API_HASH = os.environ.get("API_HASH", "e24c9b194237b7874ee602d782521a67")
 
 #Your db channel Id
-CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "-1002049130627"))
+CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "-1002122561727"))
 
 #OWNER ID
 OWNER_ID = int(os.environ.get("OWNER_ID", "6699681580"))
@@ -35,8 +35,8 @@ PORT = os.environ.get("PORT", "8585")
 
 #Database 
 #Database [https://youtu.be/qFB0cFqiyOM?si=fVicsCcRSmpuja1A]
-DB_URI = os.environ.get("DATABASE_URL", "mongodb+srv://sukhwindersandhu00445:U9HA5V1eDBsIi03H@cluster0.dgqdl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-DB_NAME = os.environ.get("DATABASE_NAME", "Cluster0")
+DB_URI = os.environ.get("DATABASE_URL", "mongodb+srv://minecraft2727k:daksh2727me@filebot.47tgnlr.mongodb.net/?retryWrites=true&w=majority&appName=FileBot")
+DB_NAME = os.environ.get("DATABASE_NAME", "FileBot")
 
 #Shortner (token system) 
 # check my discription to help by using my refer link of shareus.io
