@@ -16,6 +16,14 @@ def oprate_user(user_id: int):
         return True  # User added successfully
     return False  # User already exists
 
+
+
+def pre_user(user_id: int) -> bool:
+    """Check if a user is already in approved_users."""
+    return user_id in approved_users
+
+
+
 def remove_user(user_id: int):
     """Remove a user from the list."""
     approved_users.discard(user_id)
