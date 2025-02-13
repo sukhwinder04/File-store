@@ -13,7 +13,7 @@ import requests
 import time
 from datetime import datetime
 from database.database import user_data, db_verify_status, db_update_verify_status
-from plugins.join_req import pre_user
+from plugins.join_req import pre_user, pre_user_2
 #logger = logging.getLogger(__name__)
 #logger.setLevel(logging.INFO)
 
@@ -42,6 +42,9 @@ async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL2:
         return True
     user_id = update.from_user.id
+    
+    if pre_user_2(user_id):
+        return True
         
     if user_id in ADMINS:
         return True
@@ -61,7 +64,10 @@ async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL2:
         return True
     user_id = update.from_user.id
-
+    
+    if pre_user(user_id) and pre_user_2(user_id):
+        return True
+    
     if user_id in ADMINS:
         return True
     try:
