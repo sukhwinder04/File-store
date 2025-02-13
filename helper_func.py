@@ -12,64 +12,48 @@ from shortzy import Shortzy
 import requests
 import time
 from datetime import datetime
-from database.database import user_data, db_verify_status, db_update_verify_status
+from database.database import user_data, db_verify_status, db_update_verify_status, req_sent_user_exist
 
 #logger = logging.getLogger(__name__)
 #logger.setLevel(logging.INFO)
 
 async def is_subscribed(filter, client, update):
-    if not FORCE_SUB_CHANNEL:
-        return True
     user_id = update.from_user.id
+    chat_id1 = FORCE_SUB_CHANNEL
+    chat_id2 = FORCE_SUB_CHANNEL2
+
+    # ✅ Allow admins to bypass subscription check
     if user_id in ADMINS:
         return True
-    try:
-        member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL, user_id = user_id)
-    except UserNotParticipant:
-        return False
 
-    if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER, ChatMemberStatus.RESTRICTED]:
-        return False
-    else:
+    # ✅ Check if the user has a pending request in the database (Treat as subscribed)
+    if await req_sent_user_exist(chat_id1, user_id) or await req_sent_user_exist(chat_id2, user_id):
         return True
 
-async def is_subscribed(filter, client, update):
-    if not FORCE_SUB_CHANNEL2:
-        return True
-    user_id = update.from_user.id
-    if user_id in ADMINS:
-        return True
-    try:
-        member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL2, user_id = user_id)
-    except UserNotParticipant:
-        return False
-
-    if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER, ChatMemberStatus.RESTRICTED]:
-        return False
-    else:
+    # ✅ If no force-sub channels are set, allow access
+    if not chat_id1 and not chat_id2:
         return True
 
-async def is_subscribed(filter, client, update):
-    if not FORCE_SUB_CHANNEL:
-        return True
-    if not FORCE_SUB_CHANNEL2:
-        return True
-    user_id = update.from_user.id
-    if user_id in ADMINS:
-        return True
-    try:
-        member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL, user_id = user_id)
-    except UserNotParticipant:
-        return False
+    # ✅ Check subscription in chat_id1
+    if chat_id1:
+        try:
+            member = await client.get_chat_member(chat_id=chat_id1, user_id=user_id)
+            if member.status not in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER, ChatMemberStatus.RESTRICTED]:
+                return False
+        except UserNotParticipant:
+            return False
 
-    if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER, ChatMemberStatus.RESTRICTED]:
-        return False
-    try:
-        member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL2, user_id = user_id)
-    except UserNotParticipant:
-        return False
-    else:
-        return True
+    # ✅ Check subscription in chat_id2
+    if chat_id2:
+        try:
+            member = await client.get_chat_member(chat_id=chat_id2, user_id=user_id)
+            if member.status not in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER, ChatMemberStatus.RESTRICTED]:
+                return False
+        except UserNotParticipant:
+            return False
+
+    return True  # ✅ User is subscribed
+
 
 async def encode(string):
     string_bytes = string.encode("ascii")
