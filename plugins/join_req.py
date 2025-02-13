@@ -7,7 +7,7 @@ from bot import Bot
 approved_users = set()
 banned_users = set()  # Track banned users
 
-def add_user(user_id: int):
+def oprate_user(user_id: int):
     """Add a user if they are not banned and not already in the list."""
     if user_id in banned_users:
         return False  # Do not add banned users
