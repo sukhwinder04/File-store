@@ -235,7 +235,15 @@ async def not_joined(client: Client, message: Message):
         ButtonUrl = invite.invite_link
     else:
         ButtonUrl = client.invitelink
-
+    if bool(JOIN_REQUEST_ENABLE):
+        invite2 = await client.create_chat_invite_link(
+            chat_id=FORCE_SUB_CHANNEL2,
+            creates_join_request=True
+        )
+        await oprate_user_2(userss)
+        ButtonUrl2 = invite2.invite_link
+    else:
+        ButtonUrl2 = client.invitelink2
     buttons = [
         [
             InlineKeyboardButton(
@@ -243,7 +251,7 @@ async def not_joined(client: Client, message: Message):
                 url = ButtonUrl),
             InlineKeyboardButton(
                 "⚡𝗝𝗼𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹2⚡",
-                url = client.invitelink2)
+                url = ButtonUrl2)
         ]
     ]
     try:
