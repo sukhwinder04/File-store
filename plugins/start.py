@@ -113,7 +113,7 @@ async def start_command(client: Client, message: Message):
                 reply_markup = None
             await message.reply(f"Your token successfully verified and valid for: 24 Hour", reply_markup=reply_markup, protect_content=False, quote=True)
 
-        elif len(message.text) > 7 and verify_status['is_verified']:
+        elif len(message.text) > 7 and verify_status['is_verified'] or is_prem:
             try:
                 base64_string = message.text.split(" ", 1)[1]
             except:
