@@ -1,30 +1,36 @@
-from bot import Bot
+from pyrogram import Client, filters
 from pyrogram.enums import ChatMemberStatus
-from pyrogram.types import ChatMemberUpdated, ChatJoinRequest
-from database.request import req_sent_user_exist, req_sent_user, del_req_sent_user
-from config import FORCE_SUB_CHANNEL, FORCE_SUB_CHANNEL2
+from pyrogram.types import ChatJoinRequest, ChatMemberUpdated
+from bot import Bot
 
-# This handler captures membership updates (when a user leaves or is banned)
+# Store user IDs in a list instead of MongoDB
+approved_users = set()
+banned_users = set()  # Track banned users
+
+def add_user(user_id: int):
+    """Add a user if they are not banned and not already in the list."""
+    if user_id in banned_users:
+        return False  # Do not add banned users
+    if user_id not in approved_users:
+        approved_users.add(user_id)
+        return True  # User added successfully
+    return False  # User already exists
+
+def remove_user(user_id: int):
+    """Remove a user from the list."""
+    approved_users.discard(user_id)
+
+def ban_user(user_id: int):
+    """Ban a user and remove them from the approved list."""
+    banned_users.add(user_id)
+    remove_user(user_id)
+
+
 @Bot.on_chat_member_updated()
 async def handle_chat_members(client, chat_member_updated: ChatMemberUpdated):
-    chat_id = chat_member_updated.chat.id
+    """Handles when users leave or get banned from the chat."""
     user_id = chat_member_updated.old_chat_member.user.id
-
-    if chat_id in [FORCE_SUB_CHANNEL, FORCE_SUB_CHANNEL2]:  # ✅ Check both channels
-        old_member = chat_member_updated.old_chat_member
-
-        if old_member and old_member.status == ChatMemberStatus.MEMBER:
-            # Remove user from database if they were tracked before
-            if await req_sent_user_exist(user_id):
-                await del_req_sent_user(user_id)
-
-# This handler captures join requests to channels where the bot is an admin
-@Bot.on_chat_join_request()
-async def handle_join_request(client, chat_join_request: ChatJoinRequest):
-    chat_id = chat_join_request.chat.id
-    user_id = chat_join_request.from_user.id
-
-    if chat_id in [FORCE_SUB_CHANNEL, FORCE_SUB_CHANNEL2]:  # ✅ Check both channels
-        # Add user to database only if they haven't been tracked yet
-        if not await req_sent_user_exist(user_id):
-            await req_sent_user(user_id)
+    if chat_member_updated.old_chat_member.status == ChatMemberStatus.BANNED:
+        ban_user(user_id)
+    elif chat_member_updated.old_chat_member.status == ChatMemberStatus.LEFT:
+        remove_user(user_id)
