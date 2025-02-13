@@ -18,7 +18,7 @@ from bot import Bot
 from config import *
 from helper_func import subscribed, encode, decode, get_messages, get_shortlink, get_verify_status, update_verify_status, get_exp_time
 from database.database import add_user, del_user, full_userbase, present_user, is_premium
-from database.request import req_sent_user
+from .join_req import oprate_user
 from shortzy import Shortzy
 
 client = MongoClient(DB_URI)  # Replace with your MongoDB URI
@@ -231,7 +231,7 @@ async def not_joined(client: Client, message: Message):
             chat_id=FORCE_SUB_CHANNEL,
             creates_join_request=True
         )
-        await req_sent_user(userss)
+        await oprate_user(userss)
         ButtonUrl = invite.invite_link
     else:
         ButtonUrl = client.invitelink
