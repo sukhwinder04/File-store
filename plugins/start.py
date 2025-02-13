@@ -231,7 +231,7 @@ async def not_joined(client: Client, message: Message):
             chat_id=FORCE_SUB_CHANNEL,
             creates_join_request=True
         )
-        await oprate_user(userss)
+        oprate_user(userss)
         ButtonUrl = invite.invite_link
     else:
         ButtonUrl = client.invitelink
@@ -240,7 +240,7 @@ async def not_joined(client: Client, message: Message):
             chat_id=FORCE_SUB_CHANNEL2,
             creates_join_request=True
         )
-        await oprate_user_2(userss)
+        oprate_user_2(userss)
         ButtonUrl2 = invite2.invite_link
     else:
         ButtonUrl2 = client.invitelink2
