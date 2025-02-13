@@ -18,7 +18,7 @@ from bot import Bot
 from config import *
 from helper_func import subscribed, encode, decode, get_messages, get_shortlink, get_verify_status, update_verify_status, get_exp_time
 from database.database import add_user, del_user, full_userbase, present_user, is_premium
-from .join_req import oprate_user
+from .join_req import oprate_user, oprate_user_2
 from shortzy import Shortzy
 
 client = MongoClient(DB_URI)  # Replace with your MongoDB URI
