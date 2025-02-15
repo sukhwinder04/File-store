@@ -9,7 +9,8 @@ database = dbclient[DB_NAME]
 # Collections
 user_data = database['users']
 premium_users = database['premium_users']
-
+join_requests = database['join_requests']
+join_requests_2 = database['join_requests_2']
 
 # Default verification data
 default_verify = {
