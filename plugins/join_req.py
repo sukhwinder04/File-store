@@ -16,13 +16,9 @@ def oprate_user(user_id: int):
         return True  # User added successfully
     return False  # User already exists
 
-
-
 def pre_user(user_id: int) -> bool:
     """Check if a user is already in approved_users."""
     return user_id in approved_users
-
-
 
 def remove_user(user_id: int):
     """Remove a user from the list."""
@@ -33,11 +29,10 @@ def ban_user(user_id: int):
     banned_users.add(user_id)
     remove_user(user_id)
 
-
 @Bot.on_chat_member_updated()
 async def handle_chat_members(client, chat_member_updated: ChatMemberUpdated):
     """Handles when users leave or get banned from the chat."""
-    user_id = chat_member_updated.old_chat_member.from_user.id
+    user_id = chat_member_updated.old_chat_member.user.id  # Use `user` instead of `from_user`
     if chat_member_updated.old_chat_member.status == ChatMemberStatus.BANNED:
         ban_user(user_id)
     elif chat_member_updated.old_chat_member.status == ChatMemberStatus.LEFT:
@@ -49,10 +44,6 @@ async def handle_chat_members(client, chat_member_updated: ChatMemberUpdated):
 #############################################################################################################
 #####################################################################################################
 #############################################################################################
-
-
-
-
 
 # Store user IDs for FORCE_SUB_CHANNEL2
 approved_users_2 = set()
@@ -83,12 +74,10 @@ def ban_user_2(user_id: int):
 @Bot.on_chat_member_updated()
 async def handle_chat_members_2(client, chat_member_updated: ChatMemberUpdated):
     """Handles when users leave or get banned from FORCE_SUB_CHANNEL2."""
-    user_id = chat_member_updated.old_chat_member.from_user.id
+    user_id = chat_member_updated.old_chat_member.user.id  # Use `user` instead of `from_user`
     if chat_member_updated.old_chat_member.status == ChatMemberStatus.BANNED:
         ban_user_2(user_id)
     elif chat_member_updated.old_chat_member.status == ChatMemberStatus.LEFT:
         remove_user_2(user_id)
     elif chat_member_updated.old_chat_member.status == ChatMemberStatus.MEMBER:
         remove_user_2(user_id)
-
-
