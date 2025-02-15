@@ -68,7 +68,7 @@ async def is_subscribed(filter, client, update):
     if pre_user(user_id) and pre_user_2(user_id):
         return True
     
-    if pre_user(user_id) and not pre_user_2(user_id) or if pre_user_2(user_id) and not pre_user(user_id):
+    if pre_user(user_id) and not pre_user_2(user_id) or pre_user_2(user_id) and not pre_user(user_id):
         return False
     
     if user_id in ADMINS:
