@@ -241,7 +241,7 @@ async def not_joined(client: Client, message: Message):
             creates_join_request=True
         )
         oprate_user_2(userss)
-        ButtonUrl2 = invite2.invite_link
+        ButtonUrl2 = invite2.invite_link2
     else:
         ButtonUrl2 = client.invitelink2
     buttons = [
