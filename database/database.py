@@ -97,3 +97,33 @@ async def get_premium_users():
 async def is_premium(user_id: int):
     user = await user_data.find_one({'user_id': user_id})
     return bool(user and user.get('premium', False))  # Check if 'premium' is True
+
+
+### --- Join Requests Management --- ###
+# Add user to the first request database
+async def add_req(user_id: int):
+    await join_requests.update_one(
+        {"user_id": user_id}, {"$set": {"user_id": user_id}}, upsert=True
+    )
+
+# Remove user from the first request database
+async def remove_req(user_id: int):
+    await join_requests.delete_one({"user_id": user_id})
+
+# Check if user exists in the first request database
+async def present_req(user_id: int):
+    return await join_requests.find_one({"user_id": user_id}) is not None
+
+# Add user to the second request database
+async def add_req2(user_id: int):
+    await join_requests_2.update_one(
+        {"user_id": user_id}, {"$set": {"user_id": user_id}}, upsert=True
+    )
+
+# Remove user from the second request database
+async def remove_req2(user_id: int):
+    await join_requests_2.delete_one({"user_id": user_id})
+
+# Check if user exists in the second request database
+async def present_req2(user_id: int):
+    return await join_requests_2.find_one({"user_id": user_id}) is not None
