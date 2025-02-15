@@ -12,8 +12,7 @@ from shortzy import Shortzy
 import requests
 import time
 from datetime import datetime
-from database.database import user_data, db_verify_status, db_update_verify_status
-from plugins.join_req import pre_user, pre_user_2
+from database.database import user_data, db_verify_status, db_update_verify_status, present_req, present_req2
 #logger = logging.getLogger(__name__)
 #logger.setLevel(logging.INFO)
 
@@ -22,7 +21,7 @@ async def is_subscribed(filter, client, update):
         return True
     user_id = update.from_user.id
     
-    if pre_user(user_id):
+    if present_user(user_id):
         return True
         
     if user_id in ADMINS:
@@ -43,7 +42,7 @@ async def is_subscribed(filter, client, update):
         return True
     user_id = update.from_user.id
     
-    if pre_user_2(user_id):
+    if present_user2(user_id):
         return True
         
     if user_id in ADMINS:
@@ -65,11 +64,8 @@ async def is_subscribed(filter, client, update):
         return True
     user_id = update.from_user.id
     
-    if pre_user(user_id) and pre_user_2(user_id):
+    if present_user(user_id) and present_user2(user_id):
         return True
-    
-    if pre_user(user_id) and not pre_user_2(user_id) or pre_user_2(user_id) and not pre_user(user_id):
-        return False
     
     if user_id in ADMINS:
         return True
