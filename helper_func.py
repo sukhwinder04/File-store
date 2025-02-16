@@ -51,16 +51,14 @@ async def is_subscribed(filter, client, update):
     else:
         return True
 
-
-user = update.from_user.id
-chkk = await present_req(user) and not await present_req2(user) or not await present_req(user) and await present_req2(user)
-
 async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL:
         return True
     if not FORCE_SUB_CHANNEL2:
         return True
     user_id = update.from_user.id
+    
+    chkk = (await present_req(user_id) and not await present_req2(user_id)) or (not await present_req(user_id) and await present_req2(user_id))
     
     if user_id in ADMINS:
         return True
