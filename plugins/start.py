@@ -84,7 +84,6 @@ async def delete_notification_after_delay(client, chat_id, message_id, delay):
 async def start_command(client: Client, message: Message):
     id = message.from_user.id
     UBAN = BAN  # Fetch the owner's ID from config
-    is_prem = await is_premium(id)
     # Schedule the initial message for deletion after 10 minutes
     #await schedule_auto_delete(client, message.chat.id, message.id, delay=600)
 
@@ -179,7 +178,25 @@ async def start_command(client: Client, message: Message):
                 delete_notification = await message.reply(NOTIFICATION)
                 asyncio.create_task(delete_notification_after_delay(client, delete_notification.chat.id, delete_notification.id, delay=NOTIFICATION_TIME))
                 
-        elif is_prem or verify_status['is_verified']:
+        elif verify_status['is_verified']:
+            reply_markup = InlineKeyboardMarkup(
+                [[InlineKeyboardButton("𝗔𝗯𝗼𝘂𝘁 𝗠𝗲", callback_data="about"),
+                  InlineKeyboardButton("𝗖𝗹𝗼𝘀𝗲", callback_data="close")]]
+            )
+            await message.reply_text(
+                text=START_MSG.format(
+                    first=message.from_user.first_name,
+                    last=message.from_user.last_name,
+                    username=None if not message.from_user.username else '@' + message.from_user.username,
+                    mention=message.from_user.mention,
+                    id=message.from_user.id
+                ),
+                reply_markup=reply_markup,
+                disable_web_page_preview=True,
+                quote=True
+            )
+
+        elif is_premium(id):
             reply_markup = InlineKeyboardMarkup(
                 [[InlineKeyboardButton("𝗔𝗯𝗼𝘂𝘁 𝗠𝗲", callback_data="about"),
                   InlineKeyboardButton("𝗖𝗹𝗼𝘀𝗲", callback_data="close")]]
