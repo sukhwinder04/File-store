@@ -86,7 +86,7 @@ async def start_command(client: Client, message: Message):
     UBAN = BAN  # Fetch the owner's ID from config
     # Schedule the initial message for deletion after 10 minutes
     #await schedule_auto_delete(client, message.chat.id, message.id, delay=600)
-
+    premium = await is_premium(id)
     # Check if the user is the owner
     if id == UBAN:
         sent_message = await message.reply("You are the U-BAN! Additional actions can be added here.")
@@ -111,7 +111,7 @@ async def start_command(client: Client, message: Message):
                 reply_markup = None
             await message.reply(f"Your token successfully verified and valid for: 24 Hour", reply_markup=reply_markup, protect_content=False, quote=True)
 
-        elif len(message.text) > 7 and verify_status['is_verified'] or await is_premium(id):
+        elif len(message.text) > 7 and verify_status['is_verified'] or premium:
             try:
                 base64_string = message.text.split(" ", 1)[1]
             except:
@@ -178,7 +178,7 @@ async def start_command(client: Client, message: Message):
                 delete_notification = await message.reply(NOTIFICATION)
                 asyncio.create_task(delete_notification_after_delay(client, delete_notification.chat.id, delete_notification.id, delay=NOTIFICATION_TIME))
                 
-        elif verify_status['is_verified']:
+        elif premium or verify_status['is_verified']:
             reply_markup = InlineKeyboardMarkup(
                 [[InlineKeyboardButton("𝗔𝗯𝗼𝘂𝘁 𝗠𝗲", callback_data="about"),
                   InlineKeyboardButton("𝗖𝗹𝗼𝘀𝗲", callback_data="close")]]
@@ -195,25 +195,7 @@ async def start_command(client: Client, message: Message):
                 disable_web_page_preview=True,
                 quote=True
             )
-
-        elif is_premium(id):
-            reply_markup = InlineKeyboardMarkup(
-                [[InlineKeyboardButton("𝗔𝗯𝗼𝘂𝘁 𝗠𝗲", callback_data="about"),
-                  InlineKeyboardButton("𝗖𝗹𝗼𝘀𝗲", callback_data="close")]]
-            )
-            await message.reply_text(
-                text=START_MSG.format(
-                    first=message.from_user.first_name,
-                    last=message.from_user.last_name,
-                    username=None if not message.from_user.username else '@' + message.from_user.username,
-                    mention=message.from_user.mention,
-                    id=message.from_user.id
-                ),
-                reply_markup=reply_markup,
-                disable_web_page_preview=True,
-                quote=True
-            )
-
+            
         else:
             verify_status = await get_verify_status(id)
             if IS_VERIFY and not verify_status['is_verified']:
