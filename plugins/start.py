@@ -246,10 +246,12 @@ async def not_joined(client: Client, message: Message):
         [
             InlineKeyboardButton(
                 "⚡𝗝𝗼𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹1⚡",
-                url = ButtonUrl, await add_req),
+                url = ButtonUrl)
+            await add_req(userss),
             InlineKeyboardButton(
                 "⚡𝗝𝗼𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹2⚡",
-                url = ButtonUrl2, await add_req2)
+                url = ButtonUrl2,)
+            await add_req2(userss)
         ]
     ]
     try:
