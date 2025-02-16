@@ -10,7 +10,7 @@ async def handle_chat_members(client, chat_member_updated: ChatMemberUpdated):
     if chat_member_updated.old_chat_member:  # Ensure old_chat_member is not None
         user_id = chat_member_updated.old_chat_member.user.id
         if chat_member_updated.old_chat_member.status in [ChatMemberStatus.BANNED, ChatMemberStatus.LEFT, ChatMemberStatus.MEMBER]:
-            remove_req(user_id)
+            await remove_req(user_id)
 
 @Bot.on_chat_member_updated()
 async def handle_chat_members_2(client, chat_member_updated: ChatMemberUpdated):
@@ -18,4 +18,4 @@ async def handle_chat_members_2(client, chat_member_updated: ChatMemberUpdated):
     if chat_member_updated.old_chat_member:  # Ensure old_chat_member is not None
         user_id = chat_member_updated.old_chat_member.user.id
         if chat_member_updated.old_chat_member.status in [ChatMemberStatus.BANNED, ChatMemberStatus.LEFT, ChatMemberStatus.MEMBER]:
-            remove_req2(user_id)
+           await remove_req2(user_id)
