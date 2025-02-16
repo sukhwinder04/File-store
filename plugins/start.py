@@ -230,7 +230,6 @@ async def not_joined(client: Client, message: Message):
             chat_id=FORCE_SUB_CHANNEL,
             creates_join_request=True
         )
-        await add_req(userss)
         ButtonUrl = invite.invite_link
     else:
         ButtonUrl = client.invitelink
@@ -239,7 +238,6 @@ async def not_joined(client: Client, message: Message):
             chat_id=FORCE_SUB_CHANNEL2,
             creates_join_request=True
         )
-        await add_req2(userss)
         ButtonUrl2 = invite2.invite_link
     else:
         ButtonUrl2 = client.invitelink2
