@@ -406,7 +406,7 @@ async def start_command(client: Client, message: Message):
                 delete_notification = await message.reply(NOTIFICATION)
                 asyncio.create_task(delete_notification_after_delay(client, delete_notification.chat.id, delete_notification.id, delay=NOTIFICATION_TIME))
                 
-        elif verify_status['is_verified'] or prem:
+        else:
             reply_markup = InlineKeyboardMarkup(
                 [[InlineKeyboardButton("𝗔𝗯𝗼𝘂𝘁 𝗠𝗲", callback_data="about"),
                   InlineKeyboardButton("𝗖𝗹𝗼𝘀𝗲", callback_data="close")]]
