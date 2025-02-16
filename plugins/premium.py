@@ -67,3 +67,17 @@ async def list_premium_users(bot, message: Message):
         text += f"👤 **User ID:** `{user['_id']}`\n⏳ **Expires:** {user['expiry_date']}\n\n"
 
     await message.reply_text(text)
+
+
+
+
+async def is_premium(filter, client, update):
+    user = message.from_user.id
+    if is_premium(user):
+        return True
+    else:
+        return False
+
+
+premium = filters.create(is_premium)
+
