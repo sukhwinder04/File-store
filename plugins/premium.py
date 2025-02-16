@@ -73,7 +73,7 @@ async def list_premium_users(bot, message: Message):
 
 async def is_premium(filter, client, update):
     user = message.from_user.id
-    if is_premium(user):
+    if await is_premium(user):
         return True
     else:
         return False
