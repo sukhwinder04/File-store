@@ -13,7 +13,7 @@ async def handle_chat_members(client, chat_member_updated: ChatMemberUpdated):
         if chat_member_updated.old_chat_member.status in [ChatMemberStatus.BANNED, ChatMemberStatus.LEFT, ChatMemberStatus.MEMBER]:
             await remove_req(user_id)
 
-@Bot.on_chat_join_request(filters.chat(Config.CHANNEL_ONE) | filters.chat(Config.CHANNEL_TWO))
+@Bot.on_chat_join_request(filters.chat(FORCE_SUB_CHANNEL) | filters.chat(FORCE_SUB_CHANNEL2))
 async def join_reqs(client, join_req: ChatJoinRequest):
     user_id = join_req.from_user.id
     if join_req.chat.id == FORCE_SUB_CHANNEL:
