@@ -106,6 +106,7 @@ async def add_req(user_id: int):
     await join_requests.update_one(
         {"user_id": user_id}, {"$set": {"user_id": user_id}}, upsert=True
     )
+    print("Joined")
 
 # Remove user from the first request database
 async def remove_req(user_id: int):
@@ -120,6 +121,7 @@ async def add_req2(user_id: int):
     await join_requests_2.update_one(
         {"user_id": user_id}, {"$set": {"user_id": user_id}}, upsert=True
     )
+    print("Joined")
 
 # Remove user from the second request database
 async def remove_req2(user_id: int):
