@@ -68,16 +68,3 @@ async def list_premium_users(bot, message: Message):
 
     await message.reply_text(text)
 
-
-
-
-async def is_premium(filter, client, update):
-    user = message.from_user.id
-    if await is_premium(user):
-        return True
-    else:
-        return False
-
-
-premium = filters.create(is_premium)
-
