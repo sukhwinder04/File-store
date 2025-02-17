@@ -21,9 +21,6 @@ async def is_subscribed(filter, client, update):
         return True
     user_id = update.from_user.id
     
-    if await present_req(user_id):
-        return True
-    
     if user_id in ADMINS:
         return True
     try:
@@ -33,16 +30,15 @@ async def is_subscribed(filter, client, update):
 
     if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]:
         return False
+    elif await present_req(user_id):
+        return True
     else:
         return True
 
 async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL2:
         return True
-    user_id = update.from_user.id
-
-    if await present_req2(user_id):
-        return True 
+    user_id = update.from_user.id 
         
     if user_id in ADMINS:
         return True
@@ -53,6 +49,8 @@ async def is_subscribed(filter, client, update):
 
     if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]:
         return False
+    elif await present_req2(user_id):
+        return True
     else:
         return True
 
@@ -62,9 +60,6 @@ async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL2:
         return True
     user_id = update.from_user.id
-
-    if await present_req(user_id) and await present_req2(user_id):
-        return True
         
     if user_id in ADMINS:
         return True
