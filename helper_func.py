@@ -72,10 +72,7 @@ async def is_subscribed(filter, client, update):
 
     if member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]:
         return True
-    try:
-        member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL2, user_id = user_id)
-    except UserNotParticipant:
-        return False
+
 
 
 async def encode(string):
@@ -188,8 +185,8 @@ def get_readable_time(seconds: int) -> str:
 
 
 
-async def is_premium(filter, client, update):
-    user = message.from_user.id
+async def is_premium(client, message):
+    user = update.from_user.id
     if await is_premium(user):
         return True
     else:
