@@ -20,7 +20,6 @@ async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL:
         return True
     user_id = update.from_user.id
-
     if user_id in ADMINS:
         return True
     try:
@@ -36,8 +35,7 @@ async def is_subscribed(filter, client, update):
 async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL2:
         return True
-    user_id = update.from_user.id 
-
+    user_id = update.from_user.id
     if user_id in ADMINS:
         return True
     try:
@@ -56,7 +54,6 @@ async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL2:
         return True
     user_id = update.from_user.id
-
     if user_id in ADMINS:
         return True
     try:
@@ -79,8 +76,8 @@ async def requested(_, client, update):
     return await present_req(user) and await present_req2(user)
 
 async def sub_or_req(client, message):
-    is_sub = await subscribed(client, message)
-    is_req = await req(client, message)
+    is_sub = subscribed(client, message)
+    is_req = req(client, message)
     return is_sub or is_req  # Return True if either condition is met
 
 sub_req = filters.create(sub_or_req)
