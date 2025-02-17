@@ -21,8 +21,6 @@ async def is_subscribed(filter, client, update):
         return True
     user_id = update.from_user.id
 
-    if await present_req(user_id):
-        return True
     if user_id in ADMINS:
         return True
     try:
@@ -40,8 +38,6 @@ async def is_subscribed(filter, client, update):
         return True
     user_id = update.from_user.id 
 
-    if await present_req2(user_id):
-        return True
     if user_id in ADMINS:
         return True
     try:
@@ -61,8 +57,6 @@ async def is_subscribed(filter, client, update):
         return True
     user_id = update.from_user.id
 
-    if await present_req(user_id) and await present_req2(user_id):
-        return True
     if user_id in ADMINS:
         return True
     try:
@@ -79,6 +73,13 @@ async def is_subscribed(filter, client, update):
     else:
         return True
 
+
+async def requested(filter, client, update):
+    user = update.from_user.id
+    if await present_req(user) and await present_req2(user):
+        return True
+    else:
+        return False
 async def encode(string):
     string_bytes = string.encode("ascii")
     base64_bytes = base64.urlsafe_b64encode(string_bytes)
