@@ -83,7 +83,7 @@ async def sub_or_req(client, message):
     is_req = await req(client, message)
     return is_sub or is_req  # Return True if either condition is met
 
-subscribed_or_req = filters.create(sub_or_req)
+sub_req = filters.create(sub_or_req)
 
 async def encode(string):
     string_bytes = string.encode("ascii")
