@@ -94,9 +94,9 @@ async def start_command(client: Client, message: Message):
         sent_message = await message.reply("You are the U-BAN! Additional actions can be added here.")
 
     else:
-        if not await present_user(id):
+        if not await present_user(message.from_user.id):
             try:
-                await add_user(id)
+                await add_user(message.from_user.id)
             except:
                 pass
 
