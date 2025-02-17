@@ -227,6 +227,12 @@ REPLY_ERROR = """<code>Use this command as a replay to any telegram message with
 @Bot.on_message(filters.command('start') & filters.private)
 async def not_joined(client: Client, message: Message):
     userss = message.from_user.id
+    if not await present_user(userss):
+        try:
+            await add_user(userss)
+        except:
+            pass
+
     if bool(JOIN_REQUEST_ENABLE):
         invite = await client.create_chat_invite_link(
             chat_id=FORCE_SUB_CHANNEL,
