@@ -8,7 +8,6 @@ database = dbclient[DB_NAME]
 
 # Collections
 user_data = database['users']
-premium_users = database['premium_users']
 join_requests = database['join_requests']
 join_requests_2 = database['join_requests_2']
 
@@ -76,7 +75,7 @@ async def add_premium_user(user_id: int, duration: str):
         expiry_date = datetime.datetime.utcnow() + datetime.timedelta(minutes=minutes)
         
         # Update premium status in users collection
-        await premium_users.update_one(
+        await user_data.update_one(
             {'user_id': user_id}, 
             {'$set': {'premium': True, 'expiry_date': expiry_date}}, 
             upsert=True
@@ -87,16 +86,16 @@ async def add_premium_user(user_id: int, duration: str):
 
 # Remove a user from premium
 async def remove_premium_user(user_id: int):
-    await premium_users.update_one({'user_id': user_id}, {'$set': {'premium': False, 'expiry_date': None}})
+    await user_data.update_one({'user_id': user_id}, {'$set': {'premium': False, 'expiry_date': None}})
 
 # Get all premium users
 async def get_premium_users():
-    users = premium_users.find({'premium': True})
+    users = user_data.find({'premium': True})
     return [{'_id': doc['user_id'], 'expiry_date': doc['expiry_date']} async for doc in users]
 
 # Check if a user is premium
 async def is_premium(user_id: int):
-    user = await premium_users.find_one({'user_id': user_id})
+    user = await user_data.find_one({'user_id': user_id})
     return bool(user and user.get('premium', False))  # Check if 'premium' is True
 
 
