@@ -16,7 +16,7 @@ from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated
 from datetime import datetime, timedelta
 from bot import Bot
 from config import *
-from helper_func import subscribed, encode, decode, get_messages, get_shortlink, get_verify_status, update_verify_status, get_exp_time, premium, req
+from helper_func import subscribed, encode, decode, get_messages, get_shortlink, get_verify_status, update_verify_status, get_exp_time, premium, req, sub_req
 from database.database import add_user, del_user, full_userbase, present_user, is_premium, add_req, add_req2
 from shortzy import Shortzy
 
@@ -80,7 +80,7 @@ async def delete_notification_after_delay(client, chat_id, message_id, delay):
         print(f"Error deleting notification {message_id} in chat {chat_id}: {e}")
 
 
-@Bot.on_message(filters.command('start') & filters.private & (subscribed | req))
+@Bot.on_message(filters.command('start') & filters.private & sub_req)
 async def start_command(client: Client, message: Message):
     id = message.from_user.id
     UBAN = BAN 
