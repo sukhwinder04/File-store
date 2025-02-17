@@ -16,51 +16,71 @@ from database.database import user_data, db_verify_status, db_update_verify_stat
 #logger = logging.getLogger(__name__)
 #logger.setLevel(logging.INFO)
 
-
 async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL:
         return True
     user_id = update.from_user.id
     
-    if user_id in ADMINS or await present_req(user_id):
+    if await present_req(user_id):
         return True
-        
+    
+    if user_id in ADMINS:
+        return True
     try:
-        member = await client.get_chat_member(chat_id=FORCE_SUB_CHANNEL, user_id=user_id)
+        member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL, user_id = user_id)
     except UserNotParticipant:
         return False
-    return member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]
+
+    if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]:
+        return False
+    else:
+        return True
 
 async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL2:
         return True
     user_id = update.from_user.id
-    if user_id in ADMINS or await present_req2(user_id):
+
+    if await present_req2(user_id):
+        return True 
+        
+    if user_id in ADMINS:
         return True
     try:
-        member = await client.get_chat_member(chat_id=FORCE_SUB_CHANNEL2, user_id=user_id)
+        member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL2, user_id = user_id)
     except UserNotParticipant:
         return False
-    return member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]
+
+    if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]:
+        return False
+    else:
+        return True
 
 async def is_subscribed(filter, client, update):
-    if not FORCE_SUB_CHANNEL or not FORCE_SUB_CHANNEL2:
+    if not FORCE_SUB_CHANNEL:
+        return True
+    if not FORCE_SUB_CHANNEL2:
         return True
     user_id = update.from_user.id
-    if user_id in ADMINS or (await present_req(user_id) and await present_req2(user_id)):
+
+    if await present_req(user_id) and await present_req2(user_id):
+        return True
+        
+    if user_id in ADMINS:
         return True
     try:
-        member1 = await client.get_chat_member(chat_id=FORCE_SUB_CHANNEL, user_id=user_id)
+        member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL, user_id = user_id)
     except UserNotParticipant:
         return False
-    if member1.status not in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]:
+
+    if not member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]:
         return False
     try:
-        member2 = await client.get_chat_member(chat_id=FORCE_SUB_CHANNEL2, user_id=user_id)
+        member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL2, user_id = user_id)
     except UserNotParticipant:
         return False
-    return member2.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]
-
+    else:
+        return True
 
 async def encode(string):
     string_bytes = string.encode("ascii")
