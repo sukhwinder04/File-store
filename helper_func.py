@@ -4,7 +4,7 @@ import base64
 import re
 import asyncio
 from pyrogram import filters
-from pyrogram.enums import ChatMemberStatus
+from pyrogram.enums import ChatMemberStatus, ChatJoinRequest
 from config import FORCE_SUB_CHANNEL, FORCE_SUB_CHANNEL2, ADMINS
 from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant
 from pyrogram.errors import FloodWait
@@ -12,9 +12,28 @@ from shortzy import Shortzy
 import requests
 import time
 from datetime import datetime
-from database.database import user_data, db_verify_status, db_update_verify_status, present_req, present_req2
+from database.database import user_data, db_verify_status, db_update_verify_status, present_req, present_req2, add_req, add_req2
 #logger = logging.getLogger(__name__)
 #logger.setLevel(logging.INFO)
+
+
+
+
+@Bot.on_chat_join_request(filters.chat(FORCE_SUB_CHANNEL) | filters.chat(FORCE_SUB_CHANNEL2))
+async def join_reqs(client, join_req: ChatJoinRequest):
+    user_id = join_req.from_user.id
+    if join_req.chat.id == FORCE_SUB_CHANNEL:
+        try:
+            await add_req(user_id)
+        except Exception as e:
+            print(f"Error adding join request to req_one: {e}")
+    elif join_req.chat.id == FORCE_SUB_CHANNEL2:
+        try:
+            await add_req2(user_id)
+        except Exception as e:
+            print(f"Error adding join request to req_two: {e}")
+
+
 
 async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL:
