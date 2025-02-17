@@ -186,7 +186,7 @@ def get_readable_time(seconds: int) -> str:
 
 
 async def is_premium(client, message):
-    user = update.from_user.id
+    user = message.from_user.id
     if await is_premium(user):
         return True
     else:
