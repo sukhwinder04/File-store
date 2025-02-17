@@ -35,8 +35,8 @@ PORT = os.environ.get("PORT", "8585")
 
 #Database 
 #Database [https://youtu.be/qFB0cFqiyOM?si=fVicsCcRSmpuja1A]
-DB_URI = os.environ.get("DATABASE_URL", "mongodb+srv://minecraft2727k:daksh2727me@filebot.47tgnlr.mongodb.net/?retryWrites=true&w=majority&appName=FileBot")
-DB_NAME = os.environ.get("DATABASE_NAME", "FileBot")
+DB_URI = os.environ.get("DATABASE_URL", "mongodb+srv://sukhwindersandhu00445:U9HA5V1eDBsIi03H@cluster0.dgqdl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+DB_NAME = os.environ.get("DATABASE_NAME", "Cluster0")
 
 #Shortner (token system) 
 # check my discription to help by using my refer link of shareus.io
