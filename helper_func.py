@@ -12,7 +12,7 @@ from shortzy import Shortzy
 import requests
 import time
 from datetime import datetime
-from database.database import user_data, db_verify_status, db_update_verify_status, present_req, present_req2, add_req, add_req2
+from database.database import user_data, db_verify_status, db_update_verify_status, present_req, present_req2, add_req, add_req2, is_premium
 #logger = logging.getLogger(__name__)
 #logger.setLevel(logging.INFO)
 
