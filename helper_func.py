@@ -198,6 +198,6 @@ async def chk_premium(filter, client, message):
         return False
 
 
-
+req = filters.create(requested)
 premium = filters.create(chk_premium)
 subscribed = filters.create(is_subscribed)
