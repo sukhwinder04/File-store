@@ -230,7 +230,8 @@ async def not_joined(client: Client, message: Message):
     )
     invite2 = await client.create_chat_invite_link(
         chat_id=FORCE_SUB_CHANNEL,
-        creates_join_request)
+        creates_join_request
+    )
     buttons = [
         [
             InlineKeyboardButton(
