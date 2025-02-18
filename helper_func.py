@@ -70,17 +70,6 @@ async def is_subscribed(filter, client, update):
     else:
         return True
 
-async def requested(_, client, update):
-    user = update.from_user.id
-    return await present_req(user) and await present_req2(user)
-
-async def sub_or_req(client, message):
-    is_sub = subscribed(client, message)
-    is_req = req(client, message)
-    return is_sub or is_req  # Return True if either condition is met
-
-sub_req = filters.create(sub_or_req)
-
 async def encode(string):
     string_bytes = string.encode("ascii")
     base64_bytes = base64.urlsafe_b64encode(string_bytes)
