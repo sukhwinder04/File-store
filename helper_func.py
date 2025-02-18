@@ -1,5 +1,6 @@
 
 
+
 import base64
 import re
 import asyncio
@@ -12,7 +13,8 @@ from shortzy import Shortzy
 import requests
 import time
 from datetime import datetime
-from database.database import user_data, db_verify_status, db_update_verify_status, present_req, present_req2, add_req, add_req2, is_premium
+from database.database import user_data, db_verify_status, db_update_verify_status, present_req, present_req2
+
 #logger = logging.getLogger(__name__)
 #logger.setLevel(logging.INFO)
 
@@ -179,14 +181,4 @@ def get_readable_time(seconds: int) -> str:
     return up_time
 
 
-
-async def chk_premium(filter, client, message):
-    user = message.from_user.id
-    if await is_premium(user):
-        return True
-    else:
-        return False
-
-
-premium = filters.create(chk_premium)
 subscribed = filters.create(is_subscribed)
