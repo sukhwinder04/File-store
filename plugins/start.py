@@ -16,8 +16,8 @@ from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated
 from datetime import datetime, timedelta
 from bot import Bot
 from config import *
-from helper_func import subscribed, encode, decode, get_messages, get_shortlink, get_verify_status, update_verify_status, get_exp_time, premium
-from database.database import add_user, del_user, full_userbase, present_user, is_premium, add_req, add_req2
+from helper_func import subscribed, encode, decode, get_messages, get_shortlink, get_verify_status, update_verify_status, get_exp_time
+from database.database import add_user, del_user, full_userbase, present_user
 from shortzy import Shortzy
 
 client = MongoClient(DB_URI)  # Replace with your MongoDB URI
@@ -83,8 +83,7 @@ async def delete_notification_after_delay(client, chat_id, message_id, delay):
 @Bot.on_message(filters.command('start') & filters.private & subscribed)
 async def start_command(client: Client, message: Message):
     id = message.from_user.id
-    UBAN = BAN 
-    prem = await is_premium(id)# Fetch the owner's ID from config
+    UBAN = BAN  # Fetch the owner's ID from config
     
     # Schedule the initial message for deletion after 10 minutes
     #await schedule_auto_delete(client, message.chat.id, message.id, delay=600)
@@ -94,14 +93,14 @@ async def start_command(client: Client, message: Message):
         sent_message = await message.reply("You are the U-BAN! Additional actions can be added here.")
 
     else:
-        if not await present_user(message.from_user.id):
+        if not await present_user(id):
             try:
-                await add_user(message.from_user.id)
+                await add_user(id)
             except:
                 pass
 
         verify_status = await get_verify_status(id)
-        if verify_status['is_verified'] and VERIFY_EXPIRE < (time.time() - verify_status['verified_time']) or not prem:
+        if verify_status['is_verified'] and VERIFY_EXPIRE < (time.time() - verify_status['verified_time']):
             await update_verify_status(id, is_verified=False)
 
         if "verify_" in message.text:
@@ -113,7 +112,7 @@ async def start_command(client: Client, message: Message):
                 reply_markup = None
             await message.reply(f"Your token successfully verified and valid for: 24 Hour", reply_markup=reply_markup, protect_content=False, quote=True)
 
-        elif len(message.text) > 7 and verify_status['is_verified'] or prem:
+        elif len(message.text) > 7 and verify_status['is_verified']:
             try:
                 base64_string = message.text.split(" ", 1)[1]
             except:
@@ -180,7 +179,7 @@ async def start_command(client: Client, message: Message):
                 delete_notification = await message.reply(NOTIFICATION)
                 asyncio.create_task(delete_notification_after_delay(client, delete_notification.chat.id, delete_notification.id, delay=NOTIFICATION_TIME))
                 
-        elif verify_status['is_verified'] or prem:
+        elif verify_status['is_verified']:
             reply_markup = InlineKeyboardMarkup(
                 [[InlineKeyboardButton("𝗔𝗯𝗼𝘂𝘁 𝗠𝗲", callback_data="about"),
                   InlineKeyboardButton("𝗖𝗹𝗼𝘀𝗲", callback_data="close")]]
@@ -198,7 +197,6 @@ async def start_command(client: Client, message: Message):
                 quote=True
             )
 
-            
         else:
             verify_status = await get_verify_status(id)
             if IS_VERIFY and not verify_status['is_verified']:
@@ -226,37 +224,14 @@ REPLY_ERROR = """<code>Use this command as a replay to any telegram message with
     
 @Bot.on_message(filters.command('start') & filters.private)
 async def not_joined(client: Client, message: Message):
-    userss = message.from_user.id
-    if not await present_user(userss):
-        try:
-            await add_user(userss)
-        except:
-            pass
-
-    if bool(JOIN_REQUEST_ENABLE):
-        invite = await client.create_chat_invite_link(
-            chat_id=FORCE_SUB_CHANNEL,
-            creates_join_request=True
-        )
-        ButtonUrl = invite.invite_link
-    else:
-        ButtonUrl = client.invitelink
-    if bool(JOIN_REQUEST_ENABLE):
-        invite2 = await client.create_chat_invite_link(
-            chat_id=FORCE_SUB_CHANNEL2,
-            creates_join_request=True
-        )
-        ButtonUrl2 = invite2.invite_link
-    else:
-        ButtonUrl2 = client.invitelink2
     buttons = [
         [
             InlineKeyboardButton(
                 "⚡𝗝𝗼𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹1⚡",
-                url = ButtonUrl),
+                url = client.invitelink),
             InlineKeyboardButton(
                 "⚡𝗝𝗼𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹2⚡",
-                url = ButtonUrl2,)
+                url = client.invitelink2)
         ]
     ]
     try:
