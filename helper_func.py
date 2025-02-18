@@ -16,12 +16,11 @@ from database.database import user_data, db_verify_status, db_update_verify_stat
 #logger = logging.getLogger(__name__)
 #logger.setLevel(logging.INFO)
 
-async def is_subscribed(filter, client, update, message):
+async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL:
         return True
     user_id = update.from_user.id
-    user = message.from_user.id
-    if user_id in ADMINS or await present_req(user):
+    if user_id in ADMINS or await present_req(user_id):
         return True
     try:
         member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL, user_id = user_id)
@@ -33,12 +32,11 @@ async def is_subscribed(filter, client, update, message):
     else:
         return True
 
-async def is_subscribed(filter, client, update, message):
+async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL2:
         return True
     user_id = update.from_user.id
-    user = message.from_user.id
-    if user_id in ADMINS or await present_req2(user):
+    if user_id in ADMINS or await present_req2(user_id):
         return True
     try:
         member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL2, user_id = user_id)
@@ -50,14 +48,13 @@ async def is_subscribed(filter, client, update, message):
     else:
         return True
 
-async def is_subscribed(filter, client, update, message):
+async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL:
         return True
     if not FORCE_SUB_CHANNEL2:
         return True
     user_id = update.from_user.id
-    user = message.from_user.id
-    if user_id in ADMINS or (await present_req(user) and await present_req2(user)):
+    if user_id in ADMINS or (await present_req(user_id) and await present_req2(user_id)):
         return True
     try:
         member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL, user_id = user_id)
