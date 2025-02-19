@@ -183,7 +183,7 @@ def get_readable_time(seconds: int) -> str:
 
 async def premss(filter, client, update):
     user = update.from_user.id
-    if await is_premium(user_id):
+    if await is_premium(user):
         return True
     else:
         return False
