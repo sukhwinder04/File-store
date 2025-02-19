@@ -12,7 +12,7 @@ from shortzy import Shortzy
 import requests
 import time
 from datetime import datetime
-from database.database import user_data, db_verify_status, db_update_verify_status
+from database.database import user_data, db_verify_status, db_update_verify_status, present_req, present_req2, is_present
 
 #logger = logging.getLogger(__name__)
 #logger.setLevel(logging.INFO)
@@ -21,7 +21,7 @@ async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL:
         return True
     user_id = update.from_user.id
-    if user_id in ADMINS:
+    if user_id in ADMINS or await present_req(user_id):
         return True
     try:
         member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL, user_id = user_id)
@@ -37,7 +37,7 @@ async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL2:
         return True
     user_id = update.from_user.id
-    if user_id in ADMINS:
+    if user_id in ADMINS or await present_req2(user_id):
         return True
     try:
         member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL2, user_id = user_id)
@@ -55,7 +55,7 @@ async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL2:
         return True
     user_id = update.from_user.id
-    if user_id in ADMINS:
+    if user_id in ADMINS or (await present_req(user_id) and present_req2(user_id)):
         return True
     try:
         member = await client.get_chat_member(chat_id = FORCE_SUB_CHANNEL, user_id = user_id)
@@ -179,5 +179,12 @@ def get_readable_time(seconds: int) -> str:
     up_time += ":".join(time_list)
     return up_time
 
+async def pree(filter, client, update):
+    user = update.from_user.id
+    if await is_premium(user):
+        return True
+    else:
+        return False
 
+premium = filters.create(pree)
 subscribed = filters.create(is_subscribed)
