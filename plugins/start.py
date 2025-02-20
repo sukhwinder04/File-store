@@ -399,7 +399,7 @@ async def start_command(client: Client, message: Message):
                 disable_web_page_preview=True,
                 quote=True
             )
-    else:
-        msg = await message.reply(REPLY_ERROR)
-        await asyncio.sleep(8)
-        await msg.delete()
+        else:
+    msg = awit message.reply(REPLY_ERROR)
+    await asyncio.sleep(8)
+    await msg.delete()
