@@ -224,22 +224,14 @@ REPLY_ERROR = """<code>Use this command as a replay to any telegram message with
     
 @Bot.on_message(filters.command('start') & filters.private)
 async def not_joined(client: Client, message: Message):
-    invite = client.create_chat_invite_link(
-        chat_id=FORCE_SUB_CHANNEL,
-        creates_join_request=True
-    )
-    invite2 = client.create_chat_invite_link(
-        chat_id=FORCE_SUB_CHANNEL2,
-        creates_join_request=True
-    )
     buttons = [
         [
             InlineKeyboardButton(
                 "⚡𝗝𝗼𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹1⚡",
-                url = invite.invite_link),
+                url = "https://t.me/+GKYy820ZISE5Mjg1"),
             InlineKeyboardButton(
                 "⚡𝗝𝗼𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹2⚡",
-                url = invite2.invite_link)
+                url = "https://t.me/+kuBgeBOkWpMyNWQ1")
         ]
     ]
     try:
