@@ -5,7 +5,7 @@ from config import ADMINS
 from database.database import add_premium_user, remove_premium_user, get_premium_users, is_premium
 
 # Command to add a user to premium
-@Bot.on_message(filters.private & filters.command('add_prem') & filters.user(ADMINS))
+@Bot.on_message(filters.private & filters.command('prem') & filters.user(ADMINS))
 async def add_prem_user(client, message):
     try:
         command = message.text.split()
