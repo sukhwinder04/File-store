@@ -1,91 +1,93 @@
-from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from datetime import datetime, timedelta
+import datetime
+from pyrogram import filters
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
+from bot import Bot
 from config import ADMINS
-from database.database import add_premium_user, is_premium, remove_premium_user, get_premium_users
+from database.database import user_data
 
-@Client.on_message(filters.command("prem") & filters.user(ADMINS))
-async def add_premium_handler(client, message):
-    args = message.text.split()
-    if len(args) != 2 or not args[1].isdigit():
-        return await message.reply("Usage: /prem {user_id}")
+# Time mappings for premium duration
+time_map = {'min': 1, 'd': 1440, 'm': 43200, '3m': 129600, 'y': 525600}
+
+# Function to generate premium buttons
+def get_premium_buttons(user_id):
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("1 Min", callback_data=f"prem_{user_id}_1min")],
+        [InlineKeyboardButton("1 Day", callback_data=f"prem_{user_id}_1d")],
+        [InlineKeyboardButton("1 Month", callback_data=f"prem_{user_id}_1m")],
+        [InlineKeyboardButton("3 Months", callback_data=f"prem_{user_id}_3m")],
+        [InlineKeyboardButton("1 Year", callback_data=f"prem_{user_id}_1y")]
+    ])
+
+# /prem {user_id} command
+@Bot.on_message(filters.command("prem") & filters.user(ADMINS))
+async def add_premium_menu(client, message: Message):
+    if len(message.command) < 2:
+        await message.reply("Usage: `/prem user_id`", parse_mode="markdown")
+        return
     
-    user_id = int(args[1])
-    
-    # Generate duration selection buttons
-    buttons = [
-        [InlineKeyboardButton("1 Min", callback_data=f"prem:{user_id}:1min")],
-        [InlineKeyboardButton("1 Day", callback_data=f"prem:{user_id}:1d")],
-        [InlineKeyboardButton("1 Month", callback_data=f"prem:{user_id}:1m")],
-        [InlineKeyboardButton("3 Months", callback_data=f"prem:{user_id}:3m")],
-        [InlineKeyboardButton("1 Year", callback_data=f"prem:{user_id}:12m")]
-    ]
-    
+    user_id = message.command[1]
     await message.reply(
-        f"Select premium duration for user {user_id}",
-        reply_markup=InlineKeyboardMarkup(buttons)
+        f"Select the duration for premium user `{user_id}`:",
+        reply_markup=get_premium_buttons(user_id)
     )
 
-@Client.on_callback_query(filters.regex(r"prem:(\d+):(\d*[a-z]+)"))
-async def premium_callback(client, callback_query: CallbackQuery):
-    user_id, duration = callback_query.data.split(":")[1:]
-    user_id = int(user_id)
-    
-    # Add user to premium
-    success = await add_premium_user(user_id, duration)
-    
-    if success:
-        expiry_date = datetime.utcnow() + timedelta(minutes=1) if duration == "1min" else timedelta(days=1) if duration == "1d" else timedelta(days=30) if duration == "1m" else timedelta(days=90) if duration == "3m" else timedelta(days=365)
-        expiry_date = datetime.utcnow() + expiry_date
-        
-        await callback_query.message.edit_text(f"User {user_id} is now premium until {expiry_date.strftime('%Y-%m-%d %H:%M:%S')} UTC.")
-        
-        # Notify the user
-        try:
-            await client.send_message(
-                user_id,
-                f"🎉 Congratulations! You have been upgraded to premium.\n\n✅ Plan: {duration}\n📅 Expiry: {expiry_date.strftime('%Y-%m-%d %H:%M:%S')} UTC\n\nEnjoy your benefits!"
-            )
-        except:
-            pass  # User might have blocked the bot
+# Handle premium button clicks
+@Bot.on_callback_query(filters.regex(r"^prem_(\d+)_(\w+)$"))
+async def handle_premium_button(client, query: CallbackQuery):
+    user_id = int(query.matches[0].group(1))
+    duration_key = query.matches[0].group(2)
+
+    if duration_key not in time_map:
+        await query.answer("Invalid duration selected!", show_alert=True)
+        return
+
+    minutes = time_map[duration_key]
+    expiry_date = datetime.datetime.utcnow() + datetime.timedelta(minutes=minutes)
+
+    # Update database
+    await user_data.update_one(
+        {'user_id': user_id}, 
+        {'$set': {'premium': True, 'expiry_date': expiry_date}}, 
+        upsert=True
+    )
+
+    await query.answer("✅ User added to premium!", show_alert=True)
+    await client.send_message(user_id, f"🎉 You have been added to premium for {duration_key}!")
+
+# /remove_prem {user_id} command
+@Bot.on_message(filters.command("remove_prem") & filters.user(ADMINS))
+async def remove_premium(client, message: Message):
+    if len(message.command) < 2:
+        await message.reply("Usage: `/remove_prem user_id`", parse_mode="markdown")
+        return
+
+    user_id = int(message.command[1])
+    await user_data.update_one({'user_id': user_id}, {'$set': {'premium': False, 'expiry_date': None}})
+    await message.reply(f"✅ Removed user `{user_id}` from premium.")
+
+# /all_prem command - List all premium users
+@Bot.on_message(filters.command("all_prem") & filters.user(ADMINS))
+async def list_premium_users(client, message: Message):
+    users = user_data.find({'premium': True})
+    premium_list = [f"`{doc['user_id']}` - Expires: {doc['expiry_date']}" async for doc in users]
+
+    if premium_list:
+        await message.reply("👑 **Premium Users:**\n\n" + "\n".join(premium_list))
     else:
-        await callback_query.answer("Failed to add user to premium!", show_alert=True)
+        await message.reply("❌ No premium users found.")
 
-# Function to check expired users and notify them (to be run periodically)
-async def check_expired_premium(client):
-    premium_users = await get_premium_users()
-    now = datetime.utcnow()
-    
-    for user in premium_users:
-        expiry_date = user["expiry_date"]
-        if expiry_date and expiry_date < now:
-            user_id = user["_id"]
-            await remove_premium_user(user_id)
-            
-            # Notify user
+# Notify user when premium expires
+async def check_premium_expiry():
+    while True:
+        now = datetime.datetime.utcnow()
+        expired_users = user_data.find({'premium': True, 'expiry_date': {'$lte': now}})
+
+        async for user in expired_users:
+            user_id = user['user_id']
+            await user_data.update_one({'user_id': user_id}, {'$set': {'premium': False, 'expiry_date': None}})
             try:
-                await client.send_message(
-                    user_id,
-                    "⏳ Your premium subscription has expired. Contact admin to renew."
-                )
-            except:
-                pass  # User might have blocked the bot
-
-@Client.on_message(filters.command("remove_prem") & filters.user(ADMINS))
-async def remove_premium_handler(client, message):
-    args = message.text.split()
-    if len(args) != 2 or not args[1].isdigit():
-        return await message.reply("Usage: /remove_prem {user_id}")
-    
-    user_id = int(args[1])
-    await remove_premium_user(user_id)
-    await message.reply(f"User {user_id} has been removed from premium.")
-
-@Client.on_message(filters.command("all_prem") & filters.user(ADMINS))
-async def all_premium_users_handler(client, message):
-    premium_users = await get_premium_users()
-    if not premium_users:
-        return await message.reply("No premium users found.")
-    
-    user_list = "\n".join([f"User ID: {user['_id']} | Expiry: {user['expiry_date'].strftime('%Y-%m-%d %H:%M:%S')} UTC" for user in premium_users])
-    await message.reply(f"📜 List of Premium Users:\n{user_list}")
+                await Bot.send_message(user_id, "❌ Your premium has expired. Contact admin to renew.")
+            except Exception:
+                pass  # Ignore errors if user has blocked bot
+        
+        await asyncio.sleep(3600)  # Check every hour
