@@ -84,7 +84,7 @@ async def delete_notification_after_delay(client, chat_id, message_id, delay):
 async def start_command(client: Client, message: Message):
     id = message.from_user.id
     UBAN = BAN  # Fetch the owner's ID from config
-    is_prem = await is_premium
+    is_prem = await is_premium(id)
     # Schedule the initial message for deletion after 10 minutes
     #await schedule_auto_delete(client, message.chat.id, message.id, delay=600)
 
